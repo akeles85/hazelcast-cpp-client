@@ -1214,8 +1214,6 @@ protected:
         ASSERT_NO_THROW(topic_->publish(item).get());
 
         ASSERT_OPEN_EVENTUALLY(state->latch_for_termination);
-
-        topic_->remove_message_listener("testTerminateCase");
     }    
 
     static HazelcastServer* instance;
@@ -1610,8 +1608,6 @@ TEST_F(ReliableTopicTest, testTerminateCaseForLValue)
 
     ASSERT_OPEN_EVENTUALLY(state->latch_for_termination);
 
-    // listener is removed when the exception occured
-    topic_->remove_message_listener("testTerminateCaseForLValue");
 }
 
 } // namespace test
