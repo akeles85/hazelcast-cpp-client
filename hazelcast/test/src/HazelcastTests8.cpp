@@ -1201,6 +1201,23 @@ protected:
         instance = nullptr;
     }
 
+    void terminate_test_case()
+    {
+        ASSERT_NO_THROW(topic_ =
+                        client->get_reliable_topic("testTerminateCase").get());
+
+        auto state = std::make_shared<ListenerState>(1);
+        ASSERT_NO_THROW(listener_id_ =
+                        topic_->add_message_listener(make_listener(state, true)));
+
+        std::string item = std::to_string(0);
+        ASSERT_NO_THROW(topic_->publish(item).get());
+
+        ASSERT_OPEN_EVENTUALLY(state->latch_for_termination);
+
+        // listener is removed when the exception occured
+    }    
+
     static HazelcastServer* instance;
     static hazelcast_client* client;
     std::shared_ptr<reliable_topic> topic_;
@@ -1523,21 +1540,60 @@ TEST_F(ReliableTopicTest, testSequenceIdForLvalue)
     ASSERT_TRUE(topic_->remove_message_listener(listener_id_));
 }
 
+
 TEST_F(ReliableTopicTest, testTerminateCase)
 {
-    ASSERT_NO_THROW(topic_ =
-                      client->get_reliable_topic("testTerminateCase").get());
+    terminate_test_case();
+}
 
-    auto state = std::make_shared<ListenerState>(1);
-    ASSERT_NO_THROW(listener_id_ =
-                      topic_->add_message_listener(make_listener(state, true)));
+TEST_F(ReliableTopicTest, testTerminateCase1)
+{
+    terminate_test_case();
+}
 
-    std::string item = std::to_string(0);
-    ASSERT_NO_THROW(topic_->publish(item).get());
+TEST_F(ReliableTopicTest, testTerminateCase2)
+{
+    terminate_test_case();
+}
 
-    ASSERT_OPEN_EVENTUALLY(state->latch_for_termination);
+TEST_F(ReliableTopicTest, testTerminateCase3)
+{
+    terminate_test_case();
+}
 
-    // listener is removed when the exception occured
+TEST_F(ReliableTopicTest, testTerminateCase4)
+{
+    terminate_test_case();
+}
+
+TEST_F(ReliableTopicTest, testTerminateCase5)
+{
+    terminate_test_case();
+}
+
+TEST_F(ReliableTopicTest, testTerminateCase6)
+{
+    terminate_test_case();
+}
+
+TEST_F(ReliableTopicTest, testTerminateCase7)
+{
+    terminate_test_case();
+}
+
+TEST_F(ReliableTopicTest, testTerminateCase8)
+{
+    terminate_test_case();
+}
+
+TEST_F(ReliableTopicTest, testTerminateCase9)
+{
+    terminate_test_case();
+}
+
+TEST_F(ReliableTopicTest, testTerminateCase10)
+{
+    terminate_test_case();
 }
 
 TEST_F(ReliableTopicTest, testTerminateCaseForLValue)
