@@ -1,5 +1,6 @@
 [![codecov](https://codecov.io/gh/hazelcast/hazelcast-cpp-client/branch/master/graph/badge.svg)](https://codecov.io/gh/hazelcast/hazelcast-cpp-client)
-![example workflow](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-macos-x86_64.yml/badge.svg)
+
+[![codecov](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-macos-x86_64.yml/badge.svg)
 
 # Async Hazelcast C++ Client
 
