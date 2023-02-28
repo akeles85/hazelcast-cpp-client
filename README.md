@@ -1,9 +1,12 @@
 [![codecov](https://codecov.io/gh/hazelcast/hazelcast-cpp-client/branch/master/graph/badge.svg)](https://codecov.io/gh/hazelcast/hazelcast-cpp-client)
 
-[![codecov2](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-macos-x86_64.yml/badge.svg)](https://codecov.io/gh/hazelcast/hazelcast-cpp-client)
+[![MacOs](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-macos-x86_64.yml/badge.svg)](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-macos-x86_64.yml)
 
-[![codecov3](https://codecov.io/gh/hazelcast/hazelcast-cpp-client/branch/master/graph/badge.svg)](https://codecov.io/gh/hazelcast/hazelcast-cpp-client)
+[![Windows](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-windows.yml/badge.svg)](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-windows.yml)
 
+[![Ubuntu x86_64](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-ubuntu-x86_64.yml/badge.svg)](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-ubuntu-x86_64.yml)
+
+[![Ubuntu i386](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-ubuntu-i386.yml/badge.svg)](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-ubuntu-i386.yml)
 
 # Async Hazelcast C++ Client
 
