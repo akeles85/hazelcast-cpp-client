@@ -2992,9 +2992,10 @@ cluster_view_listener::try_register(
 
     std::weak_ptr<cluster_view_listener> weak_self = shared_from_this();
     auto conn_id = connection->get_connection_id();
+    std::weak_ptr<client::impl::hazelcast_client_instance_impl> client = client_context_.get_hazelcast_client_implementation();
 
     invocation->invoke_urgent().then(
-      [weak_self, handler, conn_id](boost::future<protocol::ClientMessage> f) {
+      [weak_self, handler, conn_id, client](boost::future<protocol::ClientMessage> f) {
           auto self = weak_self.lock();
           if (!self)
               return;
