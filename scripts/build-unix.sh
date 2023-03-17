@@ -61,7 +61,7 @@ echo "Configuring..."
 cmake $SOURCE_DIR "$@"
 
 echo "Building..."
-VERBOSE=1 cmake --build . -j4
+VERBOSE=1 cmake --build --parallel .
 
 if [ "$INSTALL" = "ON" ]; then
   echo "Installing..."
