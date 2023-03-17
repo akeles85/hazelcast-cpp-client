@@ -37,5 +37,5 @@ echo "Configuring..."
 cmake $SOURCE_DIR "$@"
 
 echo "Building..."
-VERBOSE=1 cmake --build . --parallel 4
+VERBOSE=1 cmake --build --parallel . 
 
