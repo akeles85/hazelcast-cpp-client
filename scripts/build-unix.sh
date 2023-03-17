@@ -60,9 +60,9 @@ echo "Configuring..."
 cmake $SOURCE_DIR "$@"
 
 echo "Building..."
-VERBOSE=1 cmake --build .
+VERBOSE=1 cmake --build . --parallel 4
 
 if [ "$INSTALL" = "ON" ]; then
   echo "Installing..."
-  cmake --build . --target install
+  cmake --build . --target install 
 fi
