@@ -14,6 +14,7 @@
 # Command line arguments are forwarded to CMake.
 #
 
+cmake --version
 # exit if a command returns non-zero status
 set -e
 
