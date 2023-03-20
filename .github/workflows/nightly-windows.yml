@@ -77,7 +77,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Download hazelcast-enterprise-tests.jar
+      - name: Cache jars
+        id: cache-jars
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-jars
+        with:
+          path: ~/.jars
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+            
+      - if: ${{ steps.cache-jars.outputs.cache-hit != 'true' }}
+        name: Download hazelcast-enterprise-tests.jar
         shell: pwsh
         run: |
           [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
