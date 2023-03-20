@@ -134,12 +134,7 @@ jobs:
           name: coverage-report
           path: |
             coverage.info
-            coverage-html-reports
-      - name: Publish on Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          files: coverage.info
-          
+            coverage-html-reports 
 
   Ubuntu-i386:
     needs: ensure-membership
