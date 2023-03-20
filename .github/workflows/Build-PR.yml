@@ -142,6 +142,8 @@ jobs:
           
 
   Ubuntu-i386:
+    needs: ensure-membership
+    if: always()  
     strategy:
       fail-fast: false
       matrix:
