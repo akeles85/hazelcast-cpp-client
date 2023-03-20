@@ -79,7 +79,7 @@ jobs:
     needs: ensure-membership
     if: always()
     
-    name: Ubuntu X64 with code coverage
+    name: Ubuntu x64 with CC
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -168,7 +168,6 @@ jobs:
 
     name: >-
       Ubuntu-i386
-      (${{ matrix.build_type.type }}, ${{ matrix.shared_libs.name }}, ${{matrix.boost.version}},${{ matrix.with_openssl.name }})
 
     steps:
       - name: Install Necessary Packages
@@ -254,10 +253,9 @@ jobs:
 
     runs-on: ${{ matrix.vc_boost.image }}
     env:
-      JOB_NAME: Windows_(${{ matrix.vc_boost.name }},${{ matrix.arch.address_model }},${{ matrix.build_type }},${{ matrix.shared_libs.name }}, ${{ matrix.with_openssl.name }})
+      JOB_NAME: Windows
     name: >-
       Windows
-      (${{ matrix.vc_boost.name }}, ${{ matrix.arch.address_model }}, ${{ matrix.build_type }}, ${{ matrix.shared_libs.name }}, ${{ matrix.with_openssl.name }})
     steps:
       - uses: actions/checkout@v2
 
@@ -377,7 +375,6 @@ jobs:
 
     name: >-
       macOS-x86_64
-      (${{ matrix.build_type.type }}, ${{ matrix.shared_libs.name }}, ${{ matrix.with_openssl.name }}, ${{matrix.boost.version}})
     env:
       OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
 
