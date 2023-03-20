@@ -74,7 +74,8 @@ jobs:
         
   ubuntu:
     runs-on: ubuntu-20.04
-
+    needs: ensure-membership
+    
     name: Create and upload coverage
     steps:
       - name: Checkout code
