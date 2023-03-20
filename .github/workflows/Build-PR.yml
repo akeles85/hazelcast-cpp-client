@@ -74,12 +74,12 @@ jobs:
         run: echo "User ${{ github.event.pull_request.head.repo.owner.login }} is a member of the Hazelcast organization"          
 
         
-  ubuntu:
+  ubuntu_x64_with_CC:
     runs-on: ubuntu-20.04
     needs: ensure-membership
     if: always()
     
-    name: Create and upload coverage
+    name: Ubuntu X64 with code coverage
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -140,7 +140,93 @@ jobs:
         with:
           files: coverage.info
           
+
+  Ubuntu-i386:
+    strategy:
+      fail-fast: false
+      matrix:
+        boost:
+          - version: 1.76.0
+        build_type:
+          - type: Debug
+            warn_as_err: ON
+
+        shared_libs:
+          - toggle: ON
+            name: Shared
+
+        with_openssl:
+          - toggle: ON
+            name: 'SSL'
+
+    runs-on: ubuntu-latest
+    container:
+      image: i386/ubuntu
+      options: --privileged
+
+    name: >-
+      Ubuntu-i386
+      (${{ matrix.build_type.type }}, ${{ matrix.shared_libs.name }}, ${{matrix.boost.version}},${{ matrix.with_openssl.name }})
+
+    steps:
+      - name: Install Necessary Packages
+        run: |
+          apt-get update
+          apt-get install -y build-essential cmake curl git libssl-dev maven net-tools openjdk-11-jre-headless gdb curl
+
+      - name: Make sure the target architecture is 32 bit
+        run: |
+          echo 'int main() { return sizeof(void*) != 4; }' > test.c
+          gcc test.c -oa
+          ./a
+          rm a test.c
+
+      - uses: actions/checkout@v1
+
+      - name: Download hazelcast-enterprise-tests.jar
+        run: |
+          curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" https://raw.githubusercontent.com/hazelcast/private-test-artifacts/data/certs.jar > hazelcast-enterprise-5.2.0-tests.jar
+
+      - name: Install Boost
+        run: |
+          ./scripts/install-boost.sh ${{matrix.boost.version}}
+
+      - name: Install Thrift
+        run: |
+          ./scripts/install-thrift.sh 0.13.0
+
+      - name: Build & Install
+        env:
+          BUILD_DIR: build
+          INSTALL: ON
+          WARN_AS_ERR: ${{ matrix.build_type.warn_as_err }}
+        run: |
+          ./scripts/build-unix.sh                                         \
+              -DCMAKE_BUILD_TYPE=${{ matrix.build_type.type }}            \
+              -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/destination  \
+              -DBUILD_SHARED_LIBS=${{ matrix.shared_libs.toggle }}        \
+              -DWITH_OPENSSL=${{ matrix.with_openssl.toggle }}            \
+              -DBUILD_TESTS=ON                                            \
+              -DBUILD_EXAMPLES=OFF
+
+      - name: Test
+        env:
+          BUILD_DIR: build
+          HAZELCAST_ENTERPRISE_KEY: ${{ secrets.HAZELCAST_ENTERPRISE_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          HZ_TEST_AWS_INSTANCE_PRIVATE_IP: ${{ secrets.HZ_TEST_AWS_INSTANCE_PRIVATE_IP }}
+        run: |
+          ulimit -c unlimited
+          echo 'core' > /proc/sys/kernel/core_pattern
+          echo '1' > /proc/sys/kernel/core_uses_pid
+
+          ./scripts/test-unix.sh
+
+
   nightly-Windows:
+    needs: ensure-membership
+    if: always()  
     strategy:
       fail-fast: false
       matrix:
@@ -317,7 +403,6 @@ jobs:
               -DBUILD_TESTS=ON                                            \
               -DBUILD_EXAMPLES=OFF
       - name: Test
-        if: ${{ inputs.run_tests || github.event_name == 'schedule' }}
         env:
           BUILD_DIR: build
           HAZELCAST_ENTERPRISE_KEY: ${{ secrets.HAZELCAST_ENTERPRISE_KEY }}
