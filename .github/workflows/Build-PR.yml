@@ -161,8 +161,7 @@ jobs:
       image: i386/ubuntu
       options: --privileged
 
-    name: >-
-      Ubuntu-i386
+    name: Ubuntu-i386
 
     steps:
       - name: Install Necessary Packages
@@ -249,8 +248,7 @@ jobs:
     runs-on: ${{ matrix.vc_boost.image }}
     env:
       JOB_NAME: Windows
-    name: >-
-      Windows
+    name: Windows
     steps:
       - uses: actions/checkout@v2
 
@@ -368,8 +366,7 @@ jobs:
 
     runs-on: macos-latest
 
-    name: >-
-      macOS-x86_64
+    name: macOS-x86_64
     env:
       OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
 
