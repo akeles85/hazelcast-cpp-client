@@ -203,7 +203,10 @@ jobs:
           ./a
           rm a test.c
 
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.get-refs.outputs.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download hazelcast-enterprise-tests.jar
         run: |
@@ -274,7 +277,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y net-tools libssl-dev gdb curl
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.get-refs.outputs.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download hazelcast-enterprise-tests.jar
         run: |
@@ -340,7 +346,10 @@ jobs:
       JOB_NAME: win_${{ matrix.arch.address_model }}_${{ matrix.build_type.short }}_${{ matrix.shared_libs.name }}_${{ matrix.with_openssl.name }}
     name: win-${{ matrix.arch.address_model }}_${{ matrix.shared_libs.name }}_${{ matrix.with_openssl.name }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.get-refs.outputs.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download hazelcast-enterprise-tests.jar
         shell: pwsh
@@ -458,7 +467,10 @@ jobs:
       OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.get-refs.outputs.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Dependencies
         run: |
