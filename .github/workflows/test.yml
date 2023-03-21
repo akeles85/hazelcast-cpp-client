@@ -1,0 +1,137 @@
+#
+# Workflow: Build&Test PR for Hazelcast organization members
+# This workflow builds multiple configurations for MacOS, Windows, Ubuntu i386 and Ubuntu x64
+# If all the builds and tests are success, the PR can be merged.
+# It also runs code-coverage and upload the result as an artifact.
+
+name: test
+on: 
+
+  # automatic on every pull request
+  pull_request_target:
+
+  # manual (for community PRs that we want to force-run here)  
+  workflow_dispatch:
+    inputs:
+
+      # the PR number eg 712
+      pr_number:
+        description: Enter guest PR number to run test & coverage on it.
+        required: true
+
+      # the PR HEAD commit SHA which MUST have been verified
+      pr_commit:
+        description: Enter guest PR verified HEAD commit SHA.
+        required: true
+env:
+  boost_version: 1.78.0
+  boost_archive_name: 'boost_1_78_0.tar.gz'
+  boost_folder_name: 'boost_1_78_0'
+  boost_include_folder: 'C:\Boost\include\boost-1_78'
+  boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.tar.gz'
+  thrift_version: 0.13.0
+  
+jobs:
+
+  # test hazelcast membership
+  test-membership:
+    name: Test Hazelcast Membership
+    runs-on: ubuntu-latest
+    outputs:
+      is-hazelcast: ${{ steps.test-membership.outputs.is-member }}
+
+    steps:
+      # checkout the hazelcast/hazelcast-csharp-client repository
+      # bare minimum - just to use actions
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: false
+
+      - name: Test
+        id: test-membership
+        uses: ./.github/actions/test-membership
+        with:
+          organization-name: hazelcast
+          member-name: ${{ github.event.pull_request.head.repo.owner.login }}
+          token: ${{ secrets.HAZELCAST_GITHUB_TOKEN_DEVOPS }}
+          
+  # ensure we are an Hazelcast organization member OR manually running
+  ensure-membership:
+    name: Ensure Membership
+    runs-on: ubuntu-latest
+    needs: test-membership
+    strategy:
+      fail-fast: false    
+      
+    if: needs.test-membership.outputs.is-hazelcast == 'true' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Report
+        shell: bash
+        run: echo "User ${{ github.event.pull_request.head.repo.owner.login }} is a member of the Hazelcast organization"          
+
+        
+  # run for code-coverage and upload the result as an artifact.
+  code-coverage:
+    runs-on: ubuntu-latest
+    needs: ensure-membership
+    if: always()
+    
+    name: Code Coverage
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Necessary Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y net-tools libssl-dev gdb gcovr curl          
+      - name: Download hazelcast-enterprise-tests.jar
+        run: |
+          curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" https://raw.githubusercontent.com/hazelcast/private-test-artifacts/data/certs.jar > hazelcast-enterprise-5.2.0-tests.jar
+      - name: Install Boost
+        run: |
+          sudo ./scripts/install-boost.sh ${{ env.boost_version }}
+      - name: Install Thrift
+        run: |
+          sudo ./scripts/install-thrift.sh ${{ env.thrift_version }}
+      - name: Build
+        env:
+          BUILD_DIR: build
+          COVERAGE: ON
+        run: |
+          ./scripts/build-unix.sh                                          \
+              -DCMAKE_BUILD_TYPE=Debug                                     \
+              -DBUILD_SHARED_LIBS=ON                                       \
+              -DWITH_OPENSSL=ON                                            \
+              -DBUILD_TESTS=ON                                             \
+              -DBUILD_EXAMPLES=OFF
+      - name: Test
+        env:
+          BUILD_DIR: build
+          HAZELCAST_ENTERPRISE_KEY: ${{ secrets.HAZELCAST_ENTERPRISE_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          HZ_TEST_AWS_INSTANCE_PRIVATE_IP: ${{ secrets.HZ_TEST_AWS_INSTANCE_PRIVATE_IP }}
+        run: |
+          ulimit -c unlimited
+          sudo sh -c "echo 'core' > /proc/sys/kernel/core_pattern"
+          sudo sh -c "echo '1' > /proc/sys/kernel/core_uses_pid"
+          ./scripts/test-unix.sh
+      - name: Collect coverage info
+        run: |
+          # collect and list coverage info
+          lcov --capture --directory . --no-external -o coverage.info \
+               --include "`pwd`/hazelcast/*" --exclude "`pwd`/hazelcast/test/*"
+          lcov --list coverage.info
+          # generate HTML views
+          genhtml coverage.info --output-directory=coverage-html-reports
+      - name: Upload HTML views as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: |
+            coverage.info
+            coverage-html-reports 
