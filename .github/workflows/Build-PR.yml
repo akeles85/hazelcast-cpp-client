@@ -301,12 +301,8 @@ jobs:
           - cmake: Win32
             choco_options: '--x86'
             address_model: 32
-          - cmake: x64
-            choco_options: ''
-            address_model: 64
         build_type:
           - Debug
-          - Release
         shared_libs:
           - toggle: OFF
             name: Static
