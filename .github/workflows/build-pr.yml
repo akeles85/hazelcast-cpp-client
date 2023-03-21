@@ -205,7 +205,7 @@ jobs:
 
 
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v1
         with:
           ref: ${{ needs.get-refs.outputs.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
