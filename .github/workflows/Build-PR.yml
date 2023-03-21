@@ -96,10 +96,10 @@ jobs:
           curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" https://raw.githubusercontent.com/hazelcast/private-test-artifacts/data/certs.jar > hazelcast-enterprise-5.2.0-tests.jar
       - name: Install Boost
         run: |
-          sudo ./scripts/install-boost.sh boost_version
+          sudo ./scripts/install-boost.sh ${{ env.boost_version }}
       - name: Install Thrift
         run: |
-          sudo ./scripts/install-thrift.sh thrift_version
+          sudo ./scripts/install-thrift.sh ${{ env.thrift_version }}
       - name: Build
         env:
           BUILD_DIR: build
