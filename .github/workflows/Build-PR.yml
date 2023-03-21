@@ -24,6 +24,9 @@ on:
         required: true
 env:
   boost_version: 1.80.0
+  boost_archive_name: 'boost_1_80_0.tar.gz'
+  boost_folder_name: 'boost_1_80_0'
+  boost_include_folder: 'C:\Boost\include\boost-1_80'
   thrift_version: 0.13.0
   
 jobs:
@@ -223,27 +226,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        vc_boost:
-          - name: msvc-latest_boost_1800
-            image: 'windows-latest'
-            boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.gz'
-            boost_archive_name: 'boost_1_80_0.tar.gz'
-            boost_folder_name: 'boost_1_80_0'
-            boost_include_folder: 'C:\Boost\include\boost-1_80'
         arch:
+          - cmake: Win32
+            choco_options: '--x86'
+            address_model: 32
           - cmake: x64
             choco_options: ''
             address_model: 64
         build_type:
           - Debug
+          - Release
         shared_libs:
+          - toggle: OFF
+            name: Static
           - toggle: ON
             name: Shared
         with_openssl:
+          - toggle: OFF
+            name: 'noSSL'
           - toggle: ON
             name: 'SSL'
 
-    runs-on: ${{ matrix.vc_boost.image }}
+    runs-on: 'windows-latest'
     env:
       JOB_NAME: Windows
     name: Windows
@@ -278,16 +282,16 @@ jobs:
       - name: Install Boost
         run: |
           Invoke-WebRequest `
-              "${{ matrix.vc_boost.boost_url }}" `
-              -OutFile "${{ matrix.vc_boost.boost_archive_name }}" `
+              "${{ env.boost_url }}" `
+              -OutFile "${{ env.boost_archive_name }}" `
               -UserAgent "''"
-          tar xzf ${{ matrix.vc_boost.boost_archive_name }}
-          rm ${{ matrix.vc_boost.boost_archive_name }}
-          cd ${{ matrix.vc_boost.boost_folder_name }}
+          tar xzf ${{ env.boost_archive_name }}
+          rm ${{ env.boost_archive_name }}
+          cd ${{ env.boost_folder_name }}
           .\bootstrap.bat
           .\b2 address-model=${{ matrix.arch.address_model }} --with-atomic --with-thread --with-chrono install
           cd ..
-          Remove-Item ${{ matrix.vc_boost.boost_folder_name }} -Recurse -Force
+          Remove-Item ${{ env.boost_folder_name }} -Recurse -Force
       - name: Install Thrift
         run: |
           Invoke-WebRequest `
@@ -347,18 +351,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        boost:
-            - version: 1.76.0
-
         build_type:
           - type: Debug
             warn_as_err: ON
+          - type: Release
+            warn_as_err: OFF
 
         shared_libs:
+          - toggle: OFF
+            name: Static
           - toggle: ON
             name: Shared
 
         with_openssl:
+          - toggle: OFF
+            name: 'noSSL'
           - toggle: ON
             name: 'SSL'
 
@@ -374,7 +381,7 @@ jobs:
       - name: Install Dependencies
         run: |
           brew install openssl@1.1 thrift curl
-          ./scripts/install-boost.sh ${{matrix.boost.version}}
+          ./scripts/install-boost.sh ${{env.boost_version}}
       - name: Download hazelcast-enterprise-tests.jar
         run: |
           curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" https://raw.githubusercontent.com/hazelcast/private-test-artifacts/data/certs.jar > hazelcast-enterprise-5.2.0-tests.jar
