@@ -161,7 +161,7 @@ jobs:
       image: i386/ubuntu
       options: --privileged
 
-    name: ubuntu-i386-(${{ matrix.build_type.type }}, ${{ matrix.shared_libs.name }}, ${{matrix.boost.version}},${{ matrix.with_openssl.name }})
+    name: ubuntu-i386-(${{ matrix.build_type.type }}, ${{ matrix.shared_libs.name }}, ${{ matrix.with_openssl.name }})
 
     steps:
       - name: Install Necessary Packages
@@ -241,7 +241,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    name: ubuntu-x64-(${{ matrix.build_type.type }}, ${{ matrix.shared_libs.name }}, ${{matrix.boost.version}},${{ matrix.with_openssl.name }})
+    name: ubuntu-x64-(${{ matrix.build_type.type }}, ${{ matrix.shared_libs.name }}, ${{ matrix.with_openssl.name }})
     steps:
       - name: Install Necessary Packages
         run: |
@@ -429,7 +429,7 @@ jobs:
 
     runs-on: macos-latest
 
-    name: macOS-(${{ matrix.build_type.type }}, ${{ matrix.shared_libs.name }}, ${{matrix.boost.version}},${{ matrix.with_openssl.name }})
+    name: macOS-(${{ matrix.build_type.type }}, ${{ matrix.shared_libs.name }} ,${{ matrix.with_openssl.name }})
     env:
       OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
 
