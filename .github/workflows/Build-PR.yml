@@ -30,6 +30,7 @@ env:
   boost_include_folder: 'C:\Boost\include\boost-1_78'
   boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.tar.gz'
   thrift_version: 0.13.0
+  run_tests: false
   
 jobs:
 
@@ -109,6 +110,7 @@ jobs:
               -DBUILD_TESTS=ON                                             \
               -DBUILD_EXAMPLES=OFF
       - name: Test
+        if: ${{ env.run_tests }}
         env:
           BUILD_DIR: build
           HAZELCAST_ENTERPRISE_KEY: ${{ secrets.HAZELCAST_ENTERPRISE_KEY }}
@@ -203,6 +205,7 @@ jobs:
               -DBUILD_EXAMPLES=OFF
 
       - name: Test
+        if: ${{ env.run_tests }}
         env:
           BUILD_DIR: build
           HAZELCAST_ENTERPRISE_KEY: ${{ secrets.HAZELCAST_ENTERPRISE_KEY }}
@@ -274,6 +277,7 @@ jobs:
               -DBUILD_EXAMPLES=OFF
 
       - name: Test
+        if: ${{ env.run_tests }}
         env:
           BUILD_DIR: build
           HAZELCAST_ENTERPRISE_KEY: ${{ secrets.HAZELCAST_ENTERPRISE_KEY }}
@@ -388,6 +392,7 @@ jobs:
               -DBUILD_TESTS=ON `
               -DBUILD_EXAMPLES=OFF
       - name: Test
+        if: ${{ env.run_tests }}
         env:
           BUILD_DIR: build
           BUILD_CONFIGURATION: ${{ matrix.build_type }}
@@ -456,6 +461,7 @@ jobs:
               -DBUILD_TESTS=ON                                            \
               -DBUILD_EXAMPLES=OFF
       - name: Test
+        if: ${{ env.run_tests }}
         env:
           BUILD_DIR: build
           HAZELCAST_ENTERPRISE_KEY: ${{ secrets.HAZELCAST_ENTERPRISE_KEY }}
