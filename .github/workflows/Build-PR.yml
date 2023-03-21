@@ -220,7 +220,91 @@ jobs:
           ./scripts/test-unix.sh
 
 
-  nightly-Windows:
+  Ubuntu-x86_64:
+    strategy:
+      fail-fast: false
+      matrix:
+
+        build_type:
+          - type: Debug
+            warn_as_err: ON
+          - type: Release
+            warn_as_err: OFF
+
+        shared_libs:
+          - toggle: OFF
+            name: Static
+          - toggle: ON
+            name: Shared
+
+        with_openssl:
+          - toggle: OFF
+            name: noSSL
+          - toggle: ON
+            name: SSL
+
+    runs-on: ubuntu-latest
+
+    name: Ubuntu-x86_64
+    steps:
+      - name: Install Necessary Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y net-tools libssl-dev gdb curl
+
+      - uses: actions/checkout@v2
+
+      - name: Download hazelcast-enterprise-tests.jar
+        run: |
+          curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" https://raw.githubusercontent.com/hazelcast/private-test-artifacts/data/certs.jar > hazelcast-enterprise-5.2.0-tests.jar
+
+      - name: Install Boost
+        run: |
+          sudo ./scripts/install-boost.sh ${{env.boost_version}}
+
+      - name: Install Thrift
+        run: |
+          sudo ./scripts/install-thrift.sh ${{env.thrift_version}}
+
+      - name: Build & Install
+        env:
+          BUILD_DIR: build
+          INSTALL: ON
+          WARN_AS_ERR: ${{ matrix.build_type.warn_as_err }}
+        run: |
+          ./scripts/build-unix.sh                                          \
+              -DCMAKE_BUILD_TYPE=${{ matrix.build_type.type }}             \
+              -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/destination   \
+              -DBUILD_SHARED_LIBS=${{ matrix.shared_libs.toggle }}         \
+              -DWITH_OPENSSL=${{ matrix.with_openssl.toggle }}             \
+              -DBUILD_TESTS=ON                                             \
+              -DBUILD_EXAMPLES=OFF
+
+      - name: Test
+        if: ${{ inputs.run_tests || github.event_name == 'schedule' }}
+        env:
+          BUILD_DIR: build
+          HAZELCAST_ENTERPRISE_KEY: ${{ secrets.HAZELCAST_ENTERPRISE_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          HZ_TEST_AWS_INSTANCE_PRIVATE_IP: ${{ secrets.HZ_TEST_AWS_INSTANCE_PRIVATE_IP }}
+        run: |
+          ulimit -c unlimited
+          sudo sh -c "echo 'core' > /proc/sys/kernel/core_pattern"
+          sudo sh -c "echo '1' > /proc/sys/kernel/core_uses_pid"
+
+          ./scripts/test-unix.sh
+
+      - name: Verify Installation
+        env:
+          BUILD_DIR: build-examples
+        run: |
+          ./scripts/verify-installation-unix.sh                          \
+              -DCMAKE_PREFIX_PATH=${{ github.workspace }}/destination    \
+              -DWITH_OPENSSL=${{ matrix.with_openssl.toggle }}
+
+
+  Windows:
     needs: ensure-membership
     if: always()  
     strategy:
