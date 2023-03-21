@@ -176,7 +176,7 @@ jobs:
           ./a
           rm a test.c
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
 
       - name: Download hazelcast-enterprise-tests.jar
         run: |
