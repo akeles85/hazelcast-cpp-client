@@ -78,7 +78,6 @@ jobs:
   code-coverage:
     runs-on: ubuntu-latest
     needs: ensure-membership
-    if: always()
     
     name: Code Coverage
     steps:
@@ -140,7 +139,6 @@ jobs:
 
   Ubuntu-i386:
     needs: ensure-membership
-    if: always()  
     strategy:
       fail-fast: false
       matrix:
@@ -222,7 +220,6 @@ jobs:
 
   Ubuntu-x86_64:
     needs: ensure-membership
-    if: always()        
     strategy:
       fail-fast: false
       matrix:
@@ -293,7 +290,6 @@ jobs:
 
   Windows:
     needs: ensure-membership
-    if: always()  
     strategy:
       fail-fast: false
       matrix:
@@ -411,7 +407,6 @@ jobs:
             
   macOS-x86_64:
     needs: ensure-membership
-    if: always()
     strategy:
       fail-fast: false
       matrix:
