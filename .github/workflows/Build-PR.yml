@@ -1,15 +1,6 @@
 #
 # Workflow: Build&Test PR for Hazelcast organization members
 #
-# Builds the code and run tests on a 2-dimension matrix of OS and frameworks, but
-# only if the user is a member of the Hazelcast organization, as running the tests
-# may end up running unsafe user code or expose secrets such as the enterprise key.
-#
-# Relies on build-and-test.yml workflow to do the actual building and testing of
-# each OS and framework. Results are uploaded as artifacts and published as checks.
-#
-# Creates the 'Build&Test Result' check which is the check that GitHub requires
-# (the PR cannot be merged until that check has completed successfully).
 #
 
 name: Build&Test PR
@@ -85,12 +76,12 @@ jobs:
     name: Code Coverage
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Necessary Packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y net-tools libssl-dev gdb gcovr curl
+          sudo apt-get install -y net-tools libssl-dev gdb gcovr curl          
       - name: Download hazelcast-enterprise-tests.jar
         run: |
           curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" https://raw.githubusercontent.com/hazelcast/private-test-artifacts/data/certs.jar > hazelcast-enterprise-5.2.0-tests.jar
@@ -145,17 +136,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        boost:
-          - version: 1.76.0
         build_type:
           - type: Debug
             warn_as_err: ON
-
+          - type: Release
+            warn_as_err: OFF
+            
         shared_libs:
+          - toggle: OFF
+            name: Static
           - toggle: ON
             name: Shared
 
         with_openssl:
+          - toggle: OFF
+            name: 'noSSL'
           - toggle: ON
             name: 'SSL'
 
@@ -187,11 +182,11 @@ jobs:
 
       - name: Install Boost
         run: |
-          ./scripts/install-boost.sh ${{matrix.boost.version}}
+          ./scripts/install-boost.sh ${{ env.boost_version }}
 
       - name: Install Thrift
         run: |
-          ./scripts/install-thrift.sh 0.13.0
+          ./scripts/install-thrift.sh ${{ env.thrift_version }}
 
       - name: Build & Install
         env:
