@@ -203,7 +203,9 @@ jobs:
           ./a
           rm a test.c
 
-      - uses: actions/checkout@v3
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
         with:
           ref: ${{ needs.get-refs.outputs.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
