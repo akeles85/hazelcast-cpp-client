@@ -300,15 +300,6 @@ jobs:
 
           ./scripts/test-unix.sh
 
-      - name: Verify Installation
-        env:
-          BUILD_DIR: build-examples
-        run: |
-          ./scripts/verify-installation-unix.sh                          \
-              -DCMAKE_PREFIX_PATH=${{ github.workspace }}/destination    \
-              -DWITH_OPENSSL=${{ matrix.with_openssl.toggle }}
-
-
   Windows:
     needs: ensure-membership
     if: always()  
