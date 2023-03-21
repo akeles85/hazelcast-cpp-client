@@ -165,7 +165,7 @@ jobs:
       image: i386/ubuntu
       options: --privileged
 
-    name: Ubuntu-i386
+    name: ubuntu-i386-(${{ matrix.build_type.type }}, ${{ matrix.shared_libs.name }}, ${{matrix.boost.version}},${{ matrix.with_openssl.name }})
 
     steps:
       - name: Install Necessary Packages
@@ -250,7 +250,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    name: Ubuntu-x86_64
+    name: ubuntu-x64-(${{ matrix.build_type.type }}, ${{ matrix.shared_libs.name }}, ${{matrix.boost.version}},${{ matrix.with_openssl.name }})
     steps:
       - name: Install Necessary Packages
         run: |
@@ -329,8 +329,8 @@ jobs:
 
     runs-on: 'windows-latest'
     env:
-      JOB_NAME: Windows
-    name: Windows
+      JOB_NAME: win_${{ matrix.arch.address_model }}_${{ matrix.build_type.short }}_${{ matrix.shared_libs.name }}_${{ matrix.with_openssl.name }}
+    name: win_${{ matrix.arch.address_model }}_${{ matrix.build_type.short }}_${{ matrix.shared_libs.name }}_${{ matrix.with_openssl.name }}
     steps:
       - uses: actions/checkout@v3
 
@@ -425,7 +425,7 @@ jobs:
             **/*.pdb
             *.dmp
             
-  nightly-macOS-x86_64:
+  macOS-x86_64:
     needs: ensure-membership
     if: always()
     strategy:
@@ -451,7 +451,7 @@ jobs:
 
     runs-on: macos-latest
 
-    name: macOS-x86_64
+    name: macOS-(${{ matrix.build_type.type }}, ${{ matrix.shared_libs.name }}, ${{matrix.boost.version}},${{ matrix.with_openssl.name }})
     env:
       OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
 
