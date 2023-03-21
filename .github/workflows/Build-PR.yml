@@ -23,10 +23,11 @@ on:
         description: Enter guest PR verified HEAD commit SHA.
         required: true
 env:
-  boost_version: 1.80.0
-  boost_archive_name: 'boost_1_80_0.tar.gz'
-  boost_folder_name: 'boost_1_80_0'
-  boost_include_folder: 'C:\Boost\include\boost-1_80'
+  boost_version: 1.78.0
+  boost_archive_name: 'boost_1_78_0.tar.gz'
+  boost_folder_name: 'boost_1_78_0'
+  boost_include_folder: 'C:\Boost\include\boost-1_78'
+  boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.gz'
   thrift_version: 0.13.0
   
 jobs:
