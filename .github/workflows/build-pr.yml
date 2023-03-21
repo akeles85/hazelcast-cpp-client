@@ -109,6 +109,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.get-refs.outputs.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Necessary Packages
         run: |
