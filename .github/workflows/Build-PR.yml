@@ -145,20 +145,14 @@ jobs:
         build_type:
           - type: Debug
             warn_as_err: ON
-          - type: Release
-            warn_as_err: OFF
             
         shared_libs:
           - toggle: OFF
             name: Static
-          - toggle: ON
-            name: Shared
 
         with_openssl:
           - toggle: OFF
             name: 'noSSL'
-          - toggle: ON
-            name: 'SSL'
 
     runs-on: ubuntu-latest
     container:
@@ -233,20 +227,14 @@ jobs:
         build_type:
           - type: Debug
             warn_as_err: ON
-          - type: Release
-            warn_as_err: OFF
 
         shared_libs:
           - toggle: OFF
             name: Static
-          - toggle: ON
-            name: Shared
 
         with_openssl:
           - toggle: OFF
             name: noSSL
-          - toggle: ON
-            name: SSL
 
     runs-on: ubuntu-latest
 
@@ -318,13 +306,9 @@ jobs:
         shared_libs:
           - toggle: OFF
             name: Static
-          - toggle: ON
-            name: Shared
         with_openssl:
           - toggle: OFF
             name: 'noSSL'
-          - toggle: ON
-            name: 'SSL'
 
     runs-on: 'windows-latest'
     env:
@@ -433,20 +417,14 @@ jobs:
         build_type:
           - type: Debug
             warn_as_err: ON
-          - type: Release
-            warn_as_err: OFF
 
         shared_libs:
           - toggle: OFF
             name: Static
-          - toggle: ON
-            name: Shared
 
         with_openssl:
           - toggle: OFF
             name: 'noSSL'
-          - toggle: ON
-            name: 'SSL'
 
     runs-on: macos-latest
 
