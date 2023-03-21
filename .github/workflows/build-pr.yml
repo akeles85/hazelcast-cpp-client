@@ -73,11 +73,37 @@ jobs:
         shell: bash
         run: echo "User ${{ github.event.pull_request.head.repo.owner.login }} is a member of the Hazelcast organization"          
 
-        
+
+  # get
+  get-refs:
+    name: Get Refs
+    runs-on: ubuntu-latest
+    needs: ensure-membership
+    outputs:
+      ref: ${{ steps.get-refs.outputs.ref }}
+      merged-ref: ${{ steps.get-refs.outputs.merged-ref }}
+
+    steps:
+      - name: Get Refs
+        id: get-refs
+        shell: bash
+        run: |
+          echo "EVENT: ${{ github.event_name }}"
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "PR_NUMBER: ${{ inputs.pr_number }}"
+            echo "PR_COMMIT: ${{ inputs.pr_commit }}"
+            echo "ref=refs/pull/${{ inputs.pr_number }}/merge" >> $GITHUB_OUTPUT
+            echo "merged-ref=${{ inputs.pr_commit }}" >> $GITHUB_OUTPUT
+          else
+            echo "PR_NUMBER: ${{ github.event.pull_request.number }}"
+            echo "ref=refs/pull/${{ github.event.pull_request.number }}/merge" >> $GITHUB_OUTPUT
+            echo "merged-ref=''" >> $GITHUB_OUTPUT
+          fi
+          
   # run for code-coverage and upload the result as an artifact.
   code-coverage:
     runs-on: ubuntu-latest
-    needs: ensure-membership
+    needs: get-refs
     
     name: Code Coverage
     steps:
@@ -138,7 +164,7 @@ jobs:
             coverage-html-reports 
 
   Ubuntu-i386:
-    needs: ensure-membership
+    needs: get-refs
     strategy:
       fail-fast: false
       matrix:
@@ -219,7 +245,7 @@ jobs:
 
 
   Ubuntu-x86_64:
-    needs: ensure-membership
+    needs: get-refs
     strategy:
       fail-fast: false
       matrix:
@@ -289,7 +315,7 @@ jobs:
           ./scripts/test-unix.sh
 
   Windows:
-    needs: ensure-membership
+    needs: get-refs
     strategy:
       fail-fast: false
       matrix:
@@ -406,7 +432,7 @@ jobs:
             *.dmp
             
   macOS-x86_64:
-    needs: ensure-membership
+    needs: get-refs
     strategy:
       fail-fast: false
       matrix:
