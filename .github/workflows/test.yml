@@ -12,7 +12,7 @@
 # (the PR cannot be merged until that check has completed successfully).
 #
 
-name: Build&Test PR
+name: test
 on: 
 
   # automatic on every pull request
