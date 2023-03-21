@@ -31,7 +31,10 @@ on:
       pr_commit:
         description: Enter guest PR verified HEAD commit SHA.
         required: true
-
+env:
+  boost_version: 1.80.0
+  thrift_version: 0.13.0
+  
 jobs:
 
   # test hazelcast membership
@@ -74,12 +77,12 @@ jobs:
         run: echo "User ${{ github.event.pull_request.head.repo.owner.login }} is a member of the Hazelcast organization"          
 
         
-  ubuntu_x64_with_CC:
-    runs-on: ubuntu-20.04
+  code-coverage:
+    runs-on: ubuntu-latest
     needs: ensure-membership
     if: always()
     
-    name: Ubuntu x64 with CC
+    name: Code Coverage
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -93,10 +96,10 @@ jobs:
           curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" https://raw.githubusercontent.com/hazelcast/private-test-artifacts/data/certs.jar > hazelcast-enterprise-5.2.0-tests.jar
       - name: Install Boost
         run: |
-          sudo ./scripts/install-boost.sh 1.78.0
+          sudo ./scripts/install-boost.sh boost_version
       - name: Install Thrift
         run: |
-          sudo ./scripts/install-thrift.sh 0.13.0
+          sudo ./scripts/install-thrift.sh thrift_version
       - name: Build
         env:
           BUILD_DIR: build
