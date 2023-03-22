@@ -106,15 +106,15 @@ jobs:
                 -OutFile "C:\cacert.pem"
 
       - name: Cache Boost Version
-        id: cache-boost
+        id: boost
         uses: actions/cache@v3
         env:
           cache-name: cache-boost-version
         with:          
-          path: ${{ matrix.vc_boost.boost_include_folder }}
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.arch.address_model }}-${{ matrix.vc_boost.boost_archive_name }}
+          path: C:\Boost
+          key: ${{ runner.os }}-${{ matrix.arch.address_model }}-build-${{ env.cache-name }}-${{ matrix.vc_boost.boost_archive_name }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.arch.address_model }}-${{ matrix.vc_boost.boost_archive_name }}
+            ${{ runner.os }}-${{ matrix.arch.address_model }}-build-${{ env.cache-name }}-${{ matrix.vc_boost.boost_archive_name }}
             
       - if: ${{ steps.cache-boost.outputs.cache-hit != 'true' }}
         name: Install Boost
