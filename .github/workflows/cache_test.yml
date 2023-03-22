@@ -15,18 +15,51 @@ jobs:
             boost_archive_name: 'boost_1_73_0.tar.gz'
             boost_folder_name: 'boost_1_73_0'
             boost_include_folder: 'C:\Boost\include\boost-1_73'
+          - name: msvc-2019_boost_1800
+            image: 'windows-2019'
+            boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.gz'
+            boost_archive_name: 'boost_1_80_0.tar.gz'
+            boost_folder_name: 'boost_1_80_0'
+            boost_include_folder: 'C:\Boost\include\boost-1_80'
+          - name: msvc-2022_boost_1780
+            image: 'windows-2022'
+            boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.tar.gz'
+            boost_archive_name: 'boost_1_78_0.tar.gz'
+            boost_folder_name: 'boost_1_78_0'
+            boost_include_folder: 'C:\Boost\include\boost-1_78'
+          - name: msvc-2022_boost_1800
+            image: 'windows-2022'
+            boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.gz'
+            boost_archive_name: 'boost_1_80_0.tar.gz'
+            boost_folder_name: 'boost_1_80_0'
+            boost_include_folder: 'C:\Boost\include\boost-1_80'
+          - name: msvc-latest_boost_1800
+            image: 'windows-latest'
+            boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.gz'
+            boost_archive_name: 'boost_1_80_0.tar.gz'
+            boost_folder_name: 'boost_1_80_0'
+            boost_include_folder: 'C:\Boost\include\boost-1_80'
         arch:
           - cmake: Win32
             choco_options: '--x86'
             address_model: 32
+          - cmake: x64
+            choco_options: ''
+            address_model: 64
         build_type:
           - Debug
+          - Release
         shared_libs:
           - toggle: OFF
             name: Static
+          - toggle: ON
+            name: Shared
         with_openssl:
           - toggle: OFF
             name: 'noSSL'
+          - toggle: ON
+            name: 'SSL'
+
 
     runs-on: ${{ matrix.vc_boost.image }}
     env:
