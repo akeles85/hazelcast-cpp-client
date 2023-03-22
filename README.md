@@ -2,6 +2,7 @@
 
 [![MacOs](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-macos-x86_64.yml/badge.svg)](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-macos-x86_64.yml)[![Windows](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-windows.yml/badge.svg)](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-windows.yml)[![Ubuntu x86_64](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-ubuntu-x86_64.yml/badge.svg)](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-ubuntu-x86_64.yml)[![Ubuntu i386](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-ubuntu-i386.yml/badge.svg)](https://github.com/hazelcast/hazelcast-cpp-client/actions/workflows/nightly-ubuntu-i386.yml)
 
+
 # Async Hazelcast C++ Client
 
 Hazelcast is an open-source distributed in-memory data store and computation platform. It provides a wide variety of distributed data structures and concurrency primitives.
@@ -17,6 +18,7 @@ The library can be installed using package managers [Conan](https://github.com/h
 ## Documentation
 
 You can find the detailed documentation at the [documentation site](https://hazelcast.github.io/hazelcast-cpp-client/doc-index.html) and the [API reference](https://hazelcast.github.io/hazelcast-cpp-client/api-index.html).
+
 
 ## License
 
