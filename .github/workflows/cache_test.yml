@@ -1,0 +1,101 @@
+name: cache-test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run_cache:
+    strategy:
+      fail-fast: false
+      matrix:
+        vc_boost:
+          - name: msvc-2019_boost_1730
+            image: 'windows-2019'
+            boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.73.0/source/boost_1_73_0.tar.gz'
+            boost_archive_name: 'boost_1_73_0.tar.gz'
+            boost_folder_name: 'boost_1_73_0'
+            boost_include_folder: 'C:\Boost\include\boost-1_73'
+          - name: msvc-2019_boost_1800
+            image: 'windows-2019'
+            boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.gz'
+            boost_archive_name: 'boost_1_80_0.tar.gz'
+            boost_folder_name: 'boost_1_80_0'
+            boost_include_folder: 'C:\Boost\include\boost-1_80'
+          - name: msvc-2022_boost_1780
+            image: 'windows-2022'
+            boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.tar.gz'
+            boost_archive_name: 'boost_1_78_0.tar.gz'
+            boost_folder_name: 'boost_1_78_0'
+            boost_include_folder: 'C:\Boost\include\boost-1_78'
+          - name: msvc-2022_boost_1800
+            image: 'windows-2022'
+            boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.gz'
+            boost_archive_name: 'boost_1_80_0.tar.gz'
+            boost_folder_name: 'boost_1_80_0'
+            boost_include_folder: 'C:\Boost\include\boost-1_80'
+          - name: msvc-latest_boost_1800
+            image: 'windows-latest'
+            boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.gz'
+            boost_archive_name: 'boost_1_80_0.tar.gz'
+            boost_folder_name: 'boost_1_80_0'
+            boost_include_folder: 'C:\Boost\include\boost-1_80'
+        arch:
+          - cmake: Win32
+            choco_options: '--x86'
+            address_model: 32
+          - cmake: x64
+            choco_options: ''
+            address_model: 64
+        build_type:
+          - Debug
+          - Release
+        shared_libs:
+          - toggle: OFF
+            name: Static
+          - toggle: ON
+            name: Shared
+        with_openssl:
+          - toggle: OFF
+            name: 'noSSL'
+          - toggle: ON
+            name: 'SSL'
+
+
+    runs-on: ${{ matrix.vc_boost.image }}
+    env:
+      JOB_NAME: Windows_(${{ matrix.vc_boost.name }},${{ matrix.arch.address_model }},${{ matrix.build_type }},${{ matrix.shared_libs.name }}, ${{ matrix.with_openssl.name }})
+    name: >-
+      Windows
+      (${{ matrix.vc_boost.name }}, ${{ matrix.arch.address_model }}, ${{ matrix.build_type }}, ${{ matrix.shared_libs.name }}, ${{ matrix.with_openssl.name }})
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ${{ matrix.vc_boost.boost_include_folder }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.vc_boost.boost_archive_name }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.vc_boost.boost_archive_name }}
+
+      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+        name: Install Boost
+        run: |
+          Invoke-WebRequest `
+              "${{ matrix.vc_boost.boost_url }}" `
+              -OutFile "${{ matrix.vc_boost.boost_archive_name }}" `
+              -UserAgent "''"
+          tar xzf ${{ matrix.vc_boost.boost_archive_name }}
+          rm ${{ matrix.vc_boost.boost_archive_name }}
+          cd ${{ matrix.vc_boost.boost_folder_name }}
+          .\bootstrap.bat
+          .\b2 address-model=${{ matrix.arch.address_model }} --with-atomic --with-thread --with-chrono install
+          cd ..
+          Remove-Item ${{ matrix.vc_boost.boost_folder_name }} -Recurse -Force
+
+   
