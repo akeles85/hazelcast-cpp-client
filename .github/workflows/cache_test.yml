@@ -1,17 +1,10 @@
-name: test
+name: cache-test
 
 on:
   workflow_dispatch:
-    inputs:
-      run_tests:
-        type: boolean
-        description: Enable/Disable test stage
-        default: true
-  schedule:
-    - cron: '0 2 * * *'
 
 jobs:
-  nightly-Windows:
+  run_cache:
     strategy:
       fail-fast: false
       matrix:
@@ -105,6 +98,7 @@ jobs:
                 "https://curl.se/ca/cacert.pem" `
                 -OutFile "C:\cacert.pem"
 
+      - uses: actions/checkout@v3
       - name: Cache boost directory
         id: cache-boost
         uses: actions/cache@v3
