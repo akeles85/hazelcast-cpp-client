@@ -45,7 +45,7 @@ jobs:
           cache-name: cache-node-modules
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ${{ matrix.vc_boost.boost_folder_name }}
+          path: ${{ matrix.vc_boost.boost_include_folder }}
           key: ${{ runner.os }}-build-${{ env.cache-name }}-
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
