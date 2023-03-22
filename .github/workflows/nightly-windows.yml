@@ -116,7 +116,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.vc_boost.boost_archive_name }}
             
-      - if: ${{ steps.cache-boost-version.outputs.cache-hit != 'true' }}
+      - if: ${{ steps.cache-boost.outputs.cache-hit != 'true' }}
         name: Install Boost
         run: |
           Invoke-WebRequest `
