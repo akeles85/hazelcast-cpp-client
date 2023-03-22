@@ -37,8 +37,23 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ${{ matrix.vc_boost.boost_folder_name }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
-      - name: Install Boost
+      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+        name: Install Boost
         run: |
           Invoke-WebRequest `
               "${{ matrix.vc_boost.boost_url }}" `
