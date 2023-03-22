@@ -106,7 +106,7 @@ jobs:
                 -OutFile "C:\cacert.pem"
 
       - name: Cache Boost Version
-        id: boost
+        id: cache-boost
         uses: actions/cache@v3
         env:
           cache-name: cache-boost-version
