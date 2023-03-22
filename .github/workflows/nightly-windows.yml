@@ -131,7 +131,19 @@ jobs:
           cd ..
           Remove-Item ${{ matrix.vc_boost.boost_folder_name }} -Recurse -Force
 
-      - name: Install Thrift
+      - name: Cache Thrift Version
+        id: cache-thrift
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-thrift-version
+        with:          
+          path: C:\Thrift
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-thrift-0.13
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-thrift-0.13
+            
+      - if: ${{ steps.cache-thrift-version.outputs.cache-hit != 'true' }}
+        name: Install Thrift
         run: |
           Invoke-WebRequest `
               "https://archive.apache.org/dist/thrift/0.13.0/thrift-0.13.0.tar.gz" `
