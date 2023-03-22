@@ -138,9 +138,9 @@ jobs:
           cache-name: cache-thrift-version
         with:          
           path: C:\Thrift
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.arch.address_model }}-thrift-0.13
+          key: ${{ runner.os }}-${{ matrix.arch.address_model }}-build-${{ env.cache-name }}-thrift-0.13
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.arch.address_model }}-thrift-0.13
+            ${{ runner.os }}-${{ matrix.arch.address_model }}-build-${{ env.cache-name }}-thrift-0.13
             
       - if: ${{ steps.cache-thrift.outputs.cache-hit != 'true' }}
         name: Install Thrift
