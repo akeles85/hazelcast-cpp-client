@@ -79,11 +79,9 @@ jobs:
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: ${{ matrix.vc_boost.boost_include_folder }}
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.vc_boost.boost_archive_name }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.vc_boost.boost_archive_name }}
 
       - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
         name: Install Boost
