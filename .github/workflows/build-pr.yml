@@ -56,7 +56,7 @@ jobs:
         uses: ./.github/actions/test-membership
         with:
           organization-name: hazelcast
-          member-name: ${{ github.event.pull_request.head.repo.owner.login }}
+          member-name: ${{ github.actor }}
           token: ${{ secrets.HAZELCAST_GITHUB_TOKEN_DEVOPS }}
           
   # ensure we are an Hazelcast organization member OR manually running
