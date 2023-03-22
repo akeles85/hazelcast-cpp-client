@@ -142,7 +142,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-thrift-0.13
             
-      - if: ${{ steps.cache-thrift-version.outputs.cache-hit != 'true' }}
+      - if: ${{ steps.cache-thrift.outputs.cache-hit != 'true' }}
         name: Install Thrift
         run: |
           Invoke-WebRequest `
