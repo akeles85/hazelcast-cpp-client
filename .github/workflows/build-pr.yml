@@ -398,6 +398,17 @@ jobs:
             Invoke-WebRequest `
                 "https://curl.se/ca/cacert.pem" `
                 -OutFile "C:\cacert.pem"
+                
+      - name: Cache Boost Version
+        id: cache-boost
+        uses: actions/cache@v3
+        with:          
+          path: C:\Boost
+          key: pr-builder-boost-${{ runner.os }}-${{ matrix.arch.address_model }}-${{ matrix.build_type }}
+          restore-keys: |
+            pr-builder-boost-${{ runner.os }}-${{ matrix.arch.address_model }}-${{ matrix.build_type }}
+            
+      - if: ${{ steps.cache-boost.outputs.cache-hit != 'true' }}                
       - name: Install Boost
         run: |
           Invoke-WebRequest `
@@ -411,6 +422,17 @@ jobs:
           .\b2 address-model=${{ matrix.arch.address_model }} --with-atomic --with-thread --with-chrono install
           cd ..
           Remove-Item ${{ env.boost_folder_name }} -Recurse -Force
+          
+      - name: Cache Thrift Version
+        id: cache-thrift
+        uses: actions/cache@v3
+        with:          
+          path: C:\Thrift
+          key: pr-builder-thrift-${{ runner.os }}-${{ matrix.arch.address_model }}-${{ matrix.build_type }}
+          restore-keys: |
+            pr-builder-thrift-${{ runner.os }}-${{ matrix.arch.address_model }}-${{ matrix.build_type }}
+            
+      - if: ${{ steps.cache-thrift.outputs.cache-hit != 'true' }}          
       - name: Install Thrift
         run: |
           Invoke-WebRequest `
