@@ -1834,7 +1834,7 @@ public:
     auto client = hazelcast::new_client(std::move(clientConfig)).get();
 
     // Get a map
-    auto map = client.get_map("IssueTest_map").get();
+    auto map = client.get_map(random_map_name()).get();
 
     // Subscribe client to entry added event
     map->add_entry_listener(std::move(issue864_map_listener_), true).get();
