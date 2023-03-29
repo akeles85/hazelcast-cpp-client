@@ -1821,6 +1821,44 @@ class IssueTest : public ClientTest
 public:
     IssueTest();
 
+    void test_f()
+    {
+    HazelcastServer server(default_server_factory());
+
+    // Start a client
+    client_config clientConfig = get_config();
+    clientConfig.get_connection_strategy_config()
+      .get_retry_config()
+      .set_cluster_connect_timeout(std::chrono::seconds(10));
+
+    auto client = hazelcast::new_client(std::move(clientConfig)).get();
+
+    // Get a map
+    auto map = client.get_map("IssueTest_map").get();
+
+    // Subscribe client to entry added event
+    map->add_entry_listener(std::move(issue864_map_listener_), true).get();
+
+    // Put a key, value to the map
+    ASSERT_FALSE(map->put(1, 10).get().has_value());
+
+    ASSERT_OPEN_EVENTUALLY(latch1_);
+
+    // Restart the server
+    ASSERT_TRUE(server.shutdown());
+    HazelcastServer server2(default_server_factory());
+
+    // Put a 2nd entry to the map
+    (void)map->put(2, 20).get();
+
+    // Verify that the 2nd entry is received by the listener
+    ASSERT_OPEN_EVENTUALLY(latch2_);
+
+    // Shut down the server
+    ASSERT_TRUE(server2.shutdown());
+
+    client.shutdown().get();        
+    }
 protected:
     boost::latch latch1_;
     boost::latch latch2_;
@@ -1881,42 +1919,65 @@ TEST_F(IssueTest, testOperationRedo_smartRoutingDisabled)
 
 TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart)
 {
-    HazelcastServer server(default_server_factory());
-
-    // Start a client
-    client_config clientConfig = get_config();
-    clientConfig.get_connection_strategy_config()
-      .get_retry_config()
-      .set_cluster_connect_timeout(std::chrono::seconds(10));
-
-    auto client = hazelcast::new_client(std::move(clientConfig)).get();
-
-    // Get a map
-    auto map = client.get_map("IssueTest_map").get();
-
-    // Subscribe client to entry added event
-    map->add_entry_listener(std::move(issue864_map_listener_), true).get();
-
-    // Put a key, value to the map
-    ASSERT_FALSE(map->put(1, 10).get().has_value());
-
-    ASSERT_OPEN_EVENTUALLY(latch1_);
-
-    // Restart the server
-    ASSERT_TRUE(server.shutdown());
-    HazelcastServer server2(default_server_factory());
-
-    // Put a 2nd entry to the map
-    (void)map->put(2, 20).get();
-
-    // Verify that the 2nd entry is received by the listener
-    ASSERT_OPEN_EVENTUALLY(latch2_);
-
-    // Shut down the server
-    ASSERT_TRUE(server2.shutdown());
-
-    client.shutdown().get();
+    test_f();
 }
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart1)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart2)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart3)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart4)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart5)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart6)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart7)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart8)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart9)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart10)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart11)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart12)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart13)
+{
+    test_f();
+}
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart14)
+{
+    test_f();
+}
+
 
 TEST_F(IssueTest, testIssue221)
 {
