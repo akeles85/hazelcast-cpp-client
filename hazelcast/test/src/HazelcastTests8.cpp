@@ -1844,7 +1844,7 @@ public:
     ASSERT_FALSE(map->put(1, 10).get().has_value());
 
     ASSERT_OPEN_EVENTUALLY(latch1_);
-
+        
     // Restart the server
     ASSERT_TRUE(server.shutdown());
 
@@ -1854,12 +1854,17 @@ public:
     HazelcastServer server2(default_server_factory());
     
     ASSERT_OPEN_EVENTUALLY(reconnectedLatch);  
-    
+
+    std::cout << "map put 2" << std::endl;    
     // Put a 2nd entry to the map    
     ASSERT_FALSE(map->put(2, 20).get().has_value());
-
+    
     // Verify that the 2nd entry is received by the listener
+    std::cout << "latch2_ start" << std::endl; 
     ASSERT_OPEN_EVENTUALLY(latch2_);
+    std::cout << "latch2_ end" << std::endl; 
+    //EXPECT_EQ(boost::cv_status::no_timeout, latch2_.wait_for(boost::chrono::seconds(120)));
+        
 
     // Shut down the server
     ASSERT_TRUE(server2.shutdown());
@@ -1880,6 +1885,7 @@ IssueTest::IssueTest()
     issue864_map_listener_
       .on_added([this](entry_event&& event) {
           auto key = event.get_key().get<int>().value();
+          std::cout << "on_added: " << key << std::endl;
           ASSERT_TRUE(1 == key || 2 == key);
           if (key == 1) {
               // The received event should be the addition of key value: 1, 10
