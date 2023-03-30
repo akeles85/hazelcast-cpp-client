@@ -1848,8 +1848,8 @@ public:
     ASSERT_TRUE(server.shutdown());
     HazelcastServer server2(default_server_factory());
 
-    // Put a 2nd entry to the map
-    (void)map->put(2, 20).get();
+    // Put a 2nd entry to the map    
+    ASSERT_FALSE(map->put(2, 20).get().has_value());
 
     // Verify that the 2nd entry is received by the listener
     ASSERT_OPEN_EVENTUALLY(latch2_);
