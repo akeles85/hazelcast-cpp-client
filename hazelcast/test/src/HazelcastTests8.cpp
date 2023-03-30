@@ -1848,6 +1848,7 @@ public:
     ASSERT_TRUE(server.shutdown());
     HazelcastServer server2(default_server_factory());
     remote_controller_client().ping();
+    std::this_thread::sleep_for(std::chrono::milliseconds(10000));
     
     // Put a 2nd entry to the map    
     ASSERT_FALSE(map->put(2, 20).get().has_value());
