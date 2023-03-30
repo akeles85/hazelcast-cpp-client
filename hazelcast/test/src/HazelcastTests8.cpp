@@ -1854,7 +1854,9 @@ public:
     HazelcastServer server2(default_server_factory());
     
     ASSERT_OPEN_EVENTUALLY(reconnectedLatch);  
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    auto context = spi::ClientContext{ client };
+
+    ASSERT_TRUE_EVENTUALLY(context.get_partition_service().get_partition_count()>1);    
     std::cout << "map put 2" << std::endl;    
     // Put a 2nd entry to the map    
     ASSERT_FALSE(map->put(2, 20).get().has_value());
