@@ -1978,6 +1978,66 @@ TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart14)
     test_f();
 }
 
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart15)
+{
+    test_f();
+}
+
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart16)
+{
+    test_f();
+}
+
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart17)
+{
+    test_f();
+}
+
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart18)
+{
+    test_f();
+}
+
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart19)
+{
+    test_f();
+}
+
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart20)
+{
+    test_f();
+}
+
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart21)
+{
+    test_f();
+}
+
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart22)
+{
+    test_f();
+}
+
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart23)
+{
+    test_f();
+}
+
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart24)
+{
+    test_f();
+}
+
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart25)
+{
+    test_f();
+}
+
+TEST_F(IssueTest, testListenerSubscriptionOnSingleServerRestart26)
+{
+    test_f();
+}
+
 
 TEST_F(IssueTest, testIssue221)
 {
