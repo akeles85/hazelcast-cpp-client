@@ -1823,6 +1823,7 @@ public:
 
     void test_f()
     {
+    boost::latch reconnectedLatch(1);        
     HazelcastServer server(default_server_factory());
 
     // Start a client
@@ -1846,9 +1847,13 @@ public:
 
     // Restart the server
     ASSERT_TRUE(server.shutdown());
+
+    client.add_lifecycle_listener(lifecycle_listener().on_connected(
+      [&reconnectedLatch]() { reconnectedLatch.try_count_down(); }));
+
     HazelcastServer server2(default_server_factory());
-    remote_controller_client().ping();
-    std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+    
+    ASSERT_OPEN_EVENTUALLY(reconnectedLatch);  
     
     // Put a 2nd entry to the map    
     ASSERT_FALSE(map->put(2, 20).get().has_value());
